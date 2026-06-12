@@ -10,8 +10,9 @@ venv/
 .venv/
 
 # Logs and local notes
-*.txt
 *.log
+etl_log*.txt
+*database*.txt
 
 # Local docker setup
 docker-compose.yml
