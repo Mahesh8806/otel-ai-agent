@@ -26,7 +26,7 @@ from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
-from agent import build_agent
+from agent.agent import build_agent
 
 app = FastAPI(title="Revenue Manager Agent API")
 
