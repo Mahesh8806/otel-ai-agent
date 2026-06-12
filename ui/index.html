@@ -3,326 +3,308 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grand Harbour Hotel - Revenue Manager</title>
+  <title>Grand Harbour Hotel — Revenue Manager</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0f1117;
+      background: #060810;
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(79,70,229,0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.04) 0%, transparent 50%);
       color: #e2e8f0;
       height: 100vh;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    /* ── LOGIN PAGE ─────────────────────────────────── */
+    /* Bordered card container */
+    #app {
+      width: 100%;
+      max-width: 980px;
+      height: 100%;
+      max-height: 92vh;
+      background: #0f1117;
+      border: 1px solid #1e2340;
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 0 1px rgba(79,70,229,0.1),
+                  0 0 80px rgba(79, 70, 229, 0.12),
+                  0 32px 80px rgba(0,0,0,0.6);
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 0; }
+      #app { border-radius: 0; border: none; max-height: 100vh; }
+    }
+
+    /* ── LOGIN ──────────────────────────────────────────── */
 
     #login-page {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 16px;
     }
 
     #login-page.hidden { display: none; }
 
     .login-card {
-      background: #1a1d2e;
-      border: 1px solid #2d3152;
+      background: #12152a;
+      border: 1px solid #1e2340;
       border-radius: 16px;
-      padding: 40px;
+      padding: 44px;
       width: 100%;
       max-width: 400px;
+      animation: fadeUp 0.4s ease;
+      box-shadow: 0 0 40px rgba(79,70,229,0.1);
     }
 
-    .login-logo {
-      text-align: center;
-      font-size: 40px;
-      margin-bottom: 8px;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .login-title {
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-      color: #e2e8f0;
-      margin-bottom: 4px;
-    }
+    .login-logo     { text-align: center; font-size: 40px; margin-bottom: 8px; }
+    .login-title    { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .login-subtitle { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 32px; }
 
-    .login-subtitle {
-      text-align: center;
-      font-size: 13px;
-      color: #64748b;
-      margin-bottom: 32px;
-    }
-
-    .login-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .login-field label {
-      font-size: 13px;
-      font-weight: 500;
-      color: #94a3b8;
-    }
-
-    .login-field input {
-      background: #0f1117;
-      border: 1px solid #2d3152;
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: #e2e8f0;
-      font-size: 14px;
-      outline: none;
+    .login-field         { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .login-field label   { font-size: 13px; font-weight: 500; color: #94a3b8; }
+    .login-field input   {
+      background: #0f1117; border: 1px solid #2d3152; border-radius: 8px;
+      padding: 12px 14px; color: #e2e8f0; font-size: 14px; outline: none;
       transition: border-color 0.15s;
     }
-
     .login-field input:focus { border-color: #4f46e5; }
 
     .login-error {
-      background: #3b0f0f;
-      border: 1px solid #7f1d1d;
-      color: #fca5a5;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 13px;
-      margin-bottom: 16px;
-      display: none;
+      background: #3b0f0f; border: 1px solid #7f1d1d; color: #fca5a5;
+      border-radius: 8px; padding: 10px 14px; font-size: 13px;
+      margin-bottom: 16px; display: none;
     }
-
     .login-error.visible { display: block; }
 
     .login-btn {
-      width: 100%;
-      background: #4f46e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 13px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-      margin-top: 8px;
+      width: 100%; background: #4f46e5; color: white; border: none;
+      border-radius: 8px; padding: 13px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s; margin-top: 8px;
     }
-
-    .login-btn:hover { background: #4338ca; }
+    .login-btn:hover    { background: #4338ca; }
     .login-btn:disabled { background: #374151; cursor: not-allowed; }
 
-    /* ── CHAT PAGE ─────────────────────────────────── */
+    /* ── CHAT ───────────────────────────────────────────── */
 
-    #chat-page {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
+    #chat-page { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     #chat-page.hidden { display: none; }
 
     header {
-      background: #1a1d2e;
-      border-bottom: 1px solid #2d3152;
-      padding: 14px 24px;
+      background: #12152a;
+      border-bottom: 1px solid #1e2340;
+      padding: 13px 22px;
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
     }
 
-    header h1 {
-      font-size: 17px;
-      font-weight: 600;
-      color: #e2e8f0;
-      flex: 1;
+    .header-info { flex: 1; }
+    .header-info h1 { font-size: 16px; font-weight: 600; }
+    .header-info .status {
+      font-size: 11px; color: #3fb950; display: flex;
+      align-items: center; gap: 5px; margin-top: 2px;
+    }
+    .header-info .status .dot {
+      width: 6px; height: 6px; background: #3fb950;
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    .header-info .status.thinking .dot { background: #f0a500; animation: pulse 0.8s infinite; }
+    .header-info .status.thinking      { color: #f0a500; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
     }
 
-    header .badge {
-      font-size: 11px;
-      background: #2d3152;
-      color: #818cf8;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-weight: 500;
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+
+    .badge {
+      font-size: 11px; background: #2d3152; color: #818cf8;
+      padding: 3px 8px; border-radius: 999px; font-weight: 500;
     }
 
-    .logout-btn {
-      background: transparent;
-      border: 1px solid #2d3152;
-      color: #64748b;
-      border-radius: 6px;
-      padding: 5px 12px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
+    .icon-btn {
+      background: transparent; border: 1px solid #2d3152; color: #64748b;
+      border-radius: 6px; padding: 5px 10px; font-size: 12px;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
     }
+    .icon-btn:hover { border-color: #4f46e5; color: #e2e8f0; }
 
-    .logout-btn:hover { border-color: #4f46e5; color: #e2e8f0; }
-
+    /* Messages */
     #chat-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-width: 900px;
-      width: 100%;
-      margin: 0 auto;
+      flex: 1; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
     }
 
-    .message { display: flex; flex-direction: column; gap: 6px; max-width: 85%; }
+    /* Inner wrapper keeps content centered and max-width */
+    #chat-inner {
+      width: 100%; max-width: 860px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .message {
+      display: flex; flex-direction: column; gap: 5px;
+      max-width: 82%; animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .message.user  { align-self: flex-end; }
     .message.agent { align-self: flex-start; }
 
-    .message-label {
-      font-size: 11px;
-      color: #64748b;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .message-meta {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: #64748b; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
-
-    .message.user .message-label { text-align: right; }
+    .message.user .message-meta { justify-content: flex-end; }
+    .message-meta .time { font-weight: 400; text-transform: none; letter-spacing: 0; }
 
     .bubble {
-      padding: 12px 16px;
-      border-radius: 12px;
-      line-height: 1.6;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      padding: 12px 16px; border-radius: 12px;
+      line-height: 1.6; font-size: 14px; word-wrap: break-word; position: relative;
     }
 
     .message.user .bubble {
-      background: #3730a3;
-      color: #e0e7ff;
-      border-bottom-right-radius: 4px;
+      background: #3730a3; color: #e0e7ff;
+      border-bottom-right-radius: 4px; white-space: pre-wrap;
     }
 
     .message.agent .bubble {
-      background: #1e2235;
-      border: 1px solid #2d3152;
+      background: #1e2235; border: 1px solid #2d3152;
       border-bottom-left-radius: 4px;
-      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-      font-size: 13px;
     }
 
-    .tool-calls { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    /* Markdown styles */
+    .message.agent .bubble p              { margin-bottom: 10px; }
+    .message.agent .bubble p:last-child   { margin-bottom: 0; }
+    .message.agent .bubble strong         { color: #e2e8f0; font-weight: 600; }
+    .message.agent .bubble ul,
+    .message.agent .bubble ol             { padding-left: 20px; margin-bottom: 10px; }
+    .message.agent .bubble li            { margin-bottom: 4px; }
+    .message.agent .bubble h1,
+    .message.agent .bubble h2,
+    .message.agent .bubble h3            { color: #e2e8f0; margin: 12px 0 6px; font-size: 14px; }
+    .message.agent .bubble code          { background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #58a6ff; }
+    .message.agent .bubble pre           { background: #0d1117; padding: 10px; border-radius: 6px; overflow-x: auto; margin-bottom: 10px; }
+    .message.agent .bubble pre code      { background: none; padding: 0; color: #e2e8f0; }
+    .message.agent .bubble hr            { border-color: #2d3152; margin: 10px 0; }
+    .message.agent .bubble table         { border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 12px; }
+    .message.agent .bubble th,
+    .message.agent .bubble td            { border: 1px solid #2d3152; padding: 6px 10px; text-align: left; }
+    .message.agent .bubble th            { background: #0d1117; color: #94a3b8; }
+
+    /* Copy button */
+    .copy-btn {
+      display: none; position: absolute; top: 8px; right: 8px;
+      background: #2d3152; border: none; color: #94a3b8;
+      border-radius: 5px; padding: 3px 8px; font-size: 11px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .message.agent .bubble:hover .copy-btn { display: block; }
+    .copy-btn:hover { background: #4f46e5; color: white; }
+    .copy-btn.copied { background: #166534; color: #86efac; }
+
+    /* Tool calls */
+    .tool-calls { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
 
     .tool-call {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      overflow: hidden;
-      font-size: 12px;
+      background: #0d1117; border: 1px solid #30363d;
+      border-radius: 8px; overflow: hidden; font-size: 12px;
     }
 
     .tool-call-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      background: #161b22;
-      cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px; background: #161b22; cursor: pointer;
+      user-select: none;
     }
+    .tool-call-header:hover { background: #1c2128; }
 
-    .tool-call-header .tool-name { font-weight: 600; color: #58a6ff; font-family: monospace; }
-    .tool-call-header .status { margin-left: auto; font-size: 11px; color: #8b949e; }
-    .tool-call-header .status.running { color: #f0a500; }
-    .tool-call-header .status.done    { color: #3fb950; }
+    .tool-icon  { font-size: 14px; }
+    .tool-name  { font-weight: 600; color: #58a6ff; font-family: monospace; flex: 1; }
+    .tool-status { font-size: 11px; color: #8b949e; }
+    .tool-status.running { color: #f0a500; }
+    .tool-status.done    { color: #3fb950; }
 
     .tool-call-body {
-      padding: 8px 12px;
-      color: #8b949e;
-      display: none;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 11px;
-      line-height: 1.5;
+      padding: 8px 12px; color: #8b949e; display: none;
+      max-height: 180px; overflow-y: auto; white-space: pre-wrap;
+      font-family: monospace; font-size: 11px; line-height: 1.5;
     }
-
     .tool-call.expanded .tool-call-body { display: block; }
 
+    /* Input */
     #input-area {
-      background: #1a1d2e;
-      border-top: 1px solid #2d3152;
-      padding: 16px 24px;
+      background: #12152a; border-top: 1px solid #1e2340;
+      padding: 12px 22px; flex-shrink: 0;
     }
 
-    #input-form {
-      display: flex;
-      gap: 10px;
-      max-width: 900px;
-      margin: 0 auto;
+    .input-inner {
+      max-width: 800px; margin: 0 auto; width: 100%;
     }
+
+    /* Chips — always single scrollable row, no wrapping */
+    .suggestions {
+      display: flex; flex-wrap: nowrap; gap: 6px; margin-bottom: 10px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; padding-bottom: 2px;
+    }
+    .suggestions::-webkit-scrollbar { display: none; }
+
+    .chip {
+      background: #1e2235; border: 1px solid #2d3152; border-radius: 999px;
+      padding: 4px 12px; font-size: 12px; color: #94a3b8;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .chip:hover { background: #2d3152; color: #e2e8f0; border-color: #4f46e5; }
+
+    #input-form { display: flex; gap: 8px; align-items: flex-end; }
 
     #input {
-      flex: 1;
-      background: #0f1117;
-      border: 1px solid #2d3152;
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #e2e8f0;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; background: #0f1117; border: 1px solid #2d3152;
+      border-radius: 8px; padding: 11px 14px; color: #e2e8f0;
+      font-size: 14px; outline: none; transition: border-color 0.15s;
+      resize: none; min-height: 44px; max-height: 120px; font-family: inherit;
     }
-
     #input:focus { border-color: #4f46e5; }
     #input::placeholder { color: #475569; }
 
     #send-btn {
-      background: #4f46e5;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
+      background: #4f46e5; color: white; border: none; border-radius: 8px;
+      padding: 11px 18px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s; white-space: nowrap;
+      height: 44px;
     }
-
     #send-btn:hover    { background: #4338ca; }
     #send-btn:disabled { background: #374151; cursor: not-allowed; }
 
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      max-width: 900px;
-      margin: 0 auto 12px;
-    }
+    .input-hint { font-size: 11px; color: #2d3152; margin-top: 6px; text-align: right; }
 
-    .chip {
-      background: #1e2235;
-      border: 1px solid #2d3152;
-      border-radius: 999px;
-      padding: 5px 12px;
-      font-size: 12px;
-      color: #94a3b8;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .chip:hover { background: #2d3152; color: #e2e8f0; border-color: #4f46e5; }
-
-    .typing { display: flex; gap: 4px; padding: 8px; }
-
+    /* Typing */
+    .typing { display: flex; gap: 4px; padding: 10px 4px; }
     .typing span {
-      width: 6px; height: 6px;
-      background: #4f46e5;
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
+      width: 6px; height: 6px; background: #4f46e5;
+      border-radius: 50%; animation: bounce 1.2s infinite;
     }
-
     .typing span:nth-child(2) { animation-delay: 0.2s; }
     .typing span:nth-child(3) { animation-delay: 0.4s; }
 
@@ -331,30 +313,37 @@
       40%            { transform: translateY(-6px); }
     }
 
-    /* Markdown rendering inside agent bubbles */
-    .message.agent .bubble p        { margin-bottom: 10px; }
-    .message.agent .bubble p:last-child { margin-bottom: 0; }
-    .message.agent .bubble strong   { color: #e2e8f0; font-weight: 600; }
-    .message.agent .bubble em       { color: #94a3b8; }
-    .message.agent .bubble ul,
-    .message.agent .bubble ol       { padding-left: 20px; margin-bottom: 10px; }
-    .message.agent .bubble li       { margin-bottom: 4px; }
-    .message.agent .bubble h1,
-    .message.agent .bubble h2,
-    .message.agent .bubble h3       { color: #e2e8f0; margin: 12px 0 6px; font-size: 14px; }
-    .message.agent .bubble code     { background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #58a6ff; }
-    .message.agent .bubble pre      { background: #0d1117; padding: 10px; border-radius: 6px; overflow-x: auto; margin-bottom: 10px; }
-    .message.agent .bubble pre code { background: none; padding: 0; color: #e2e8f0; }
-    .message.agent .bubble hr       { border-color: #2d3152; margin: 10px 0; }
-
-    ::-webkit-scrollbar { width: 6px; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #2d3152; border-radius: 3px; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .message { max-width: 95%; }
+      header { padding: 10px 14px; }
+      #chat-container { padding: 12px; }
+      #input-area { padding: 10px 14px; }
+      .badge { display: none; }
+      .suggestions {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+      }
+      .suggestions::-webkit-scrollbar { display: none; }
+      .chip { flex-shrink: 0; }
+    }
+
+    /* Login page fills the card */
+    #login-page { background: transparent; }
   </style>
 </head>
 <body>
 
-<!-- ── LOGIN PAGE ─────────────────────────────────────────────── -->
+<div id="app">
+<!-- ── LOGIN ──────────────────────────────────────────────────── -->
 <div id="login-page">
   <div class="login-card">
     <div class="login-logo">🏨</div>
@@ -377,45 +366,71 @@
   </div>
 </div>
 
-<!-- ── CHAT PAGE ──────────────────────────────────────────────── -->
+<!-- ── CHAT ───────────────────────────────────────────────────── -->
 <div id="chat-page" class="hidden">
   <header>
-    <div style="font-size:22px">🏨</div>
-    <h1>Grand Harbour Hotel — Revenue Manager</h1>
-    <span class="badge">AI Agent</span>
-    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+    <div style="font-size:24px">🏨</div>
+    <div class="header-info">
+      <h1>Grand Harbour Hotel — Revenue Manager</h1>
+      <div class="status" id="agent-status">
+        <div class="dot"></div>
+        <span>Ready</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="badge">AI Agent</span>
+      <button class="icon-btn" onclick="clearChat()" title="Clear conversation">🗑 Clear</button>
+      <button class="icon-btn" onclick="handleLogout()">Sign out</button>
+    </div>
   </header>
 
   <div id="chat-container">
+   <div id="chat-inner">
     <div class="message agent">
-      <div class="message-label">Revenue Manager Agent</div>
-      <div class="bubble">Good morning. I'm your Revenue Manager.
-
-Ask me anything about the hotel's performance:
-  • What revenue is on the books by month?
-  • What's driving July?
-  • Are we too dependent on OTA?
-  • What changed in the last 7 days?
-  • How much group business do we have?
-  • Which room type has the highest ADR?</div>
+      <div class="message-meta">
+        <span>Revenue Manager Agent</span>
+        <span class="time" id="welcome-time"></span>
+      </div>
+      <div class="bubble">
+        <button class="copy-btn" onclick="copyBubble(this)">Copy</button>
+        <p>Good morning. I'm your Revenue Manager for Grand Harbour Hotel.</p>
+        <p>Ask me anything about the hotel's performance:</p>
+        <ul>
+          <li>What revenue is on the books by month?</li>
+          <li>What's driving July?</li>
+          <li>Are we too dependent on OTA?</li>
+          <li>What changed in the last 7 days?</li>
+          <li>How much group business do we have?</li>
+          <li>Which room type has the highest ADR?</li>
+        </ul>
+      </div>
     </div>
+  </div><!-- chat-inner -->
   </div>
 
   <div id="input-area">
+   <div class="input-inner">
     <div class="suggestions">
-      <span class="chip" onclick="ask('What revenue is on the books by month?')">Revenue by month</span>
-      <span class="chip" onclick="ask('What is driving July?')">What's driving July?</span>
-      <span class="chip" onclick="ask('Are we too dependent on OTA?')">OTA dependency</span>
-      <span class="chip" onclick="ask('What changed in the last 7 days for future stays?')">Last 7 days pickup</span>
-      <span class="chip" onclick="ask('How much group business do we have?')">Group business</span>
-      <span class="chip" onclick="ask('Which room type has the highest ADR?')">Room type ADR</span>
-      <span class="chip" onclick="ask('How much business was cancelled in June?')">Cancellations</span>
-      <span class="chip" onclick="ask('Is our business concentrated in a few large bookings?')">Concentration risk</span>
+      <span class="chip" onclick="ask('What revenue is on the books by month?')">📅 Revenue by month</span>
+      <span class="chip" onclick="ask('What is driving July?')">📈 What\'s driving July?</span>
+      <span class="chip" onclick="ask('Are we too dependent on OTA?')">🔗 OTA dependency</span>
+      <span class="chip" onclick="ask('What changed in the last 7 days for future stays?')">⚡ Last 7 days pickup</span>
+      <span class="chip" onclick="ask('How much group business do we have?')">👥 Group business</span>
+      <span class="chip" onclick="ask('Which room type has the highest ADR?')">🛏 Room type ADR</span>
+      <span class="chip" onclick="ask('How much business was cancelled?')">❌ Cancellations</span>
+      <span class="chip" onclick="ask('Is our revenue concentrated in a few large bookings?')">⚠ Concentration risk</span>
     </div>
     <form id="input-form" onsubmit="sendMessage(event)">
-      <input id="input" type="text" placeholder="Ask a revenue management question..." autocomplete="off" />
-      <button id="send-btn" type="submit">Send</button>
+      <textarea
+        id="input"
+        placeholder="Ask a revenue management question..."
+        autocomplete="off"
+        rows="1"
+      ></textarea>
+      <button id="send-btn" type="submit">Send ↑</button>
     </form>
+    <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+   </div><!-- input-inner -->
   </div>
 </div>
 
@@ -424,17 +439,38 @@ Ask me anything about the hotel's performance:
     ? 'http://localhost:8000'
     : window.location.origin;
 
-  // ── Auth ────────────────────────────────────────────────────────
+  // Tool icons map
+  const TOOL_ICONS = {
+    get_revenue_by_month:     '📅',
+    get_segment_mix:          '🎯',
+    get_channel_mix:          '🔗',
+    get_room_type_performance:'🛏',
+    get_cancellations:        '❌',
+    get_pickup_last_n_days:   '⚡',
+    get_group_business:       '👥',
+    get_top_companies:        '🏢',
+    get_concentration_risk:   '⚠️',
+    run_safe_sql:             '🔍',
+    read_file:                '📖',
+    write_file:               '✍️',
+  };
+
+  // Set welcome time
+  document.getElementById('welcome-time').textContent = formatTime(new Date());
+
+  function formatTime(d) {
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ── Auth ──────────────────────────────────────────────────────
 
   let authToken = sessionStorage.getItem('auth_token');
-
-  // If already logged in, skip login screen
   if (authToken) showChat();
 
   async function handleLogin(e) {
     e.preventDefault();
-    const btn      = document.getElementById('login-btn');
-    const errorEl  = document.getElementById('login-error');
+    const btn     = document.getElementById('login-btn');
+    const errorEl = document.getElementById('login-error');
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
 
@@ -474,14 +510,13 @@ Ask me anything about the hotel's performance:
         method: 'POST',
         headers: { 'Authorization': `Bearer ${authToken}` },
       });
-    } catch { /* ignore */ }
-
+    } catch {}
     sessionStorage.removeItem('auth_token');
     authToken = null;
     showLogin();
   }
 
-  function showChat() {
+  function showChat()  {
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('chat-page').classList.remove('hidden');
   }
@@ -493,54 +528,103 @@ Ask me anything about the hotel's performance:
     document.getElementById('password').value = '';
   }
 
-  // ── Chat ────────────────────────────────────────────────────────
+  // ── Chat helpers ──────────────────────────────────────────────
 
-  const container = document.getElementById('chat-container');
-  const input     = document.getElementById('input');
+  const container = document.getElementById('chat-inner');
+  const inputEl   = document.getElementById('input');
   const sendBtn   = document.getElementById('send-btn');
 
-  function ask(question) {
-    input.value = question;
-    input.focus();
+  function ask(question) { inputEl.value = question; inputEl.focus(); }
+
+  const scroller = document.getElementById('chat-container');
+  function scrollToBottom() { scroller.scrollTop = scroller.scrollHeight; }
+
+  function setStatus(mode) {
+    const el  = document.getElementById('agent-status');
+    const dot = el.querySelector('.dot');
+    const txt = el.querySelector('span');
+    if (mode === 'thinking') {
+      el.className = 'status thinking';
+      txt.textContent = 'Thinking...';
+    } else {
+      el.className = 'status';
+      txt.textContent = 'Ready';
+    }
   }
 
-  function scrollToBottom() {
-    container.scrollTop = container.scrollHeight;
+  function clearChat() {
+    const msgs = document.getElementById('chat-inner').querySelectorAll('.message');
+    msgs.forEach((m, i) => { if (i > 0) m.remove(); }); // keep welcome
+  }
+
+  function copyBubble(btn) {
+    const bubble = btn.parentElement;
+    const text = bubble.innerText.replace('Copy', '').replace('Copied!', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
   }
 
   function createToolCallEl(toolName) {
+    const icon = TOOL_ICONS[toolName] || '⚙️';
     const el = document.createElement('div');
     el.className = 'tool-call';
     el.innerHTML = `
       <div class="tool-call-header" onclick="this.parentElement.classList.toggle('expanded')">
-        <span>⚙</span>
+        <span class="tool-icon">${icon}</span>
         <span class="tool-name">${toolName}</span>
-        <span class="status running">Running...</span>
+        <span class="tool-status running">● Running</span>
       </div>
       <div class="tool-call-body"></div>
     `;
     return el;
   }
 
+  // Auto-resize textarea
+  inputEl.addEventListener('input', () => {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+  });
+
+  // Enter to send, Shift+Enter for newline
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(e);
+    }
+  });
+
+  // ── Send message ──────────────────────────────────────────────
+
   async function sendMessage(e) {
     e.preventDefault();
-    const question = input.value.trim();
-    if (!question) return;
+    const question = inputEl.value.trim();
+    if (!question || sendBtn.disabled) return;
 
-    input.value  = '';
+    inputEl.value = '';
+    inputEl.style.height = 'auto';
     sendBtn.disabled = true;
+    setStatus('thinking');
 
     // User message
     const userMsg = document.createElement('div');
     userMsg.className = 'message user';
-    userMsg.innerHTML = `<div class="message-label">GM</div><div class="bubble">${question}</div>`;
+    userMsg.innerHTML = `
+      <div class="message-meta">
+        <span class="time">${formatTime(new Date())}</span>
+        <span>GM</span>
+      </div>
+      <div class="bubble">${question.replace(/</g,'&lt;')}</div>
+    `;
     container.appendChild(userMsg);
     scrollToBottom();
 
-    // Agent message container
+    // Agent message
     const agentMsg = document.createElement('div');
     agentMsg.className = 'message agent';
-    agentMsg.innerHTML = `<div class="message-label">Revenue Manager Agent</div>`;
+    agentMsg.innerHTML = `<div class="message-meta"><span>Revenue Manager Agent</span><span class="time">${formatTime(new Date())}</span></div>`;
 
     const toolCallsContainer = document.createElement('div');
     toolCallsContainer.className = 'tool-calls';
@@ -564,12 +648,7 @@ Ask me anything about the hotel's performance:
         body: JSON.stringify({ message: question }),
       });
 
-      // Token expired or invalid — send to login
-      if (response.status === 401) {
-        sessionStorage.removeItem('auth_token');
-        showLogin();
-        return;
-      }
+      if (response.status === 401) { sessionStorage.removeItem('auth_token'); showLogin(); return; }
 
       const reader  = response.body.getReader();
       const decoder = new TextDecoder();
@@ -596,8 +675,8 @@ Ask me anything about the hotel's performance:
           } else if (event.type === 'tool_end') {
             const toolEl = activeTools[event.tool];
             if (toolEl) {
-              toolEl.querySelector('.status').textContent = 'Done';
-              toolEl.querySelector('.status').className   = 'status done';
+              toolEl.querySelector('.tool-status').textContent = '✓ Done';
+              toolEl.querySelector('.tool-status').className   = 'tool-status done';
               toolEl.querySelector('.tool-call-body').textContent = event.output;
             }
 
@@ -606,10 +685,12 @@ Ask me anything about the hotel's performance:
             if (!answerBubble) {
               answerBubble = document.createElement('div');
               answerBubble.className = 'bubble';
+              answerBubble.innerHTML = '<button class="copy-btn" onclick="copyBubble(this)">Copy</button>';
               agentMsg.appendChild(answerBubble);
             }
             answerText += event.content;
-            answerBubble.innerHTML = marked.parse(answerText);
+            const copyBtn = answerBubble.querySelector('.copy-btn');
+            answerBubble.innerHTML = '<button class="copy-btn" onclick="copyBubble(this)">Copy</button>' + marked.parse(answerText);
             scrollToBottom();
 
           } else if (event.type === 'done') {
@@ -625,8 +706,8 @@ Ask me anything about the hotel's performance:
             if (typing.parentNode) typing.remove();
             const b = document.createElement('div');
             b.className = 'bubble';
-            b.textContent = `Error: ${event.message}`;
             b.style.color = '#f87171';
+            b.textContent = `Error: ${event.message}`;
             agentMsg.appendChild(b);
           }
         }
@@ -635,19 +716,17 @@ Ask me anything about the hotel's performance:
       if (typing.parentNode) typing.remove();
       const b = document.createElement('div');
       b.className = 'bubble';
-      b.textContent = `Connection error: ${err.message}`;
       b.style.color = '#f87171';
+      b.textContent = `Connection error: ${err.message}`;
       agentMsg.appendChild(b);
     }
 
     sendBtn.disabled = false;
-    input.focus();
+    setStatus('ready');
+    inputEl.focus();
     scrollToBottom();
   }
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) sendMessage(e);
-  });
 </script>
+</div><!-- #app -->
 </body>
 </html>
