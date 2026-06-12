@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import AsyncGenerator
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env")
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -148,10 +148,15 @@ async def chat(req: ChatRequest, username: str = Depends(verify_token)):
 
                 elif kind == "on_tool_end":
                     output = event.get("data", {}).get("output", "")
+                    # Clean up raw Python string artifacts
+                    clean = str(output)
+                    if clean.startswith("content='") and clean.endswith("'"):
+                        clean = clean[9:-1]
+                    clean = clean.replace("\\n", "\n").replace("\\t", "\t")
                     data = {
                         "type": "tool_end",
                         "tool": event.get("name", ""),
-                        "output": str(output)[:2000],
+                        "output": clean[:2000],
                     }
                     yield f"data: {json.dumps(data)}\n\n"
 

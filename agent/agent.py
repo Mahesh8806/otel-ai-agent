@@ -15,7 +15,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / ".env")
 
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
@@ -52,14 +52,21 @@ You ONLY answer questions about hotel revenue management. This includes:
   - Room type performance
   - Year-over-year comparisons
 
-If anyone asks you ANYTHING outside this scope — cooking, coding, general knowledge,
-personal advice, or anything not related to hotel revenue — respond with exactly this:
+If the message is ONLY a greeting with no question (e.g. "hi", "hello", "hey", "good morning")
+and contains no revenue-related words, respond warmly and steer to business:
+
+  "Hello! I'm the Revenue Manager for Grand Harbour Hotel. How can I help you with
+   the hotel's revenue performance today? You can ask me about bookings, ADR, pickup,
+   OTA dependency, cancellations, or any other revenue question."
+
+If the message is clearly unrelated to hotel revenue (e.g. cooking, coding, weather,
+personal advice) respond with:
 
   "I'm the Revenue Manager for Grand Harbour Hotel. I can only help with hotel revenue
-   questions — bookings, ADR, pickup, segments, channels, and cancellations.
-   What would you like to know about the hotel's performance?"
+   questions. What would you like to know about the hotel's performance?"
 
-Do NOT make exceptions. Do NOT be helpful outside your role.
+When in doubt — if the question could possibly relate to hotel revenue or business
+performance — answer it using your tools. Do not refuse borderline questions.
 
 ## Your job
 
