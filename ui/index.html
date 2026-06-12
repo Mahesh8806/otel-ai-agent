@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grand Harbour Hotel - Revenue Manager</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── LOGIN PAGE ─────────────────────────────────── */
+
+    #login-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #login-page.hidden { display: none; }
+
+    .login-card {
+      background: #1a1d2e;
+      border: 1px solid #2d3152;
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-logo {
+      text-align: center;
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 32px;
+    }
+
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .login-field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+
+    .login-field input {
+      background: #0f1117;
+      border: 1px solid #2d3152;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #e2e8f0;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .login-field input:focus { border-color: #4f46e5; }
+
+    .login-error {
+      background: #3b0f0f;
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .login-error.visible { display: block; }
+
+    .login-btn {
+      width: 100%;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 8px;
+    }
+
+    .login-btn:hover { background: #4338ca; }
+    .login-btn:disabled { background: #374151; cursor: not-allowed; }
+
+    /* ── CHAT PAGE ─────────────────────────────────── */
+
+    #chat-page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #chat-page.hidden { display: none; }
+
+    header {
+      background: #1a1d2e;
+      border-bottom: 1px solid #2d3152;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #e2e8f0;
+      flex: 1;
+    }
+
+    header .badge {
+      font-size: 11px;
+      background: #2d3152;
+      color: #818cf8;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #2d3152;
+      color: #64748b;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .logout-btn:hover { border-color: #4f46e5; color: #e2e8f0; }
+
+    #chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .message { display: flex; flex-direction: column; gap: 6px; max-width: 85%; }
+    .message.user  { align-self: flex-end; }
+    .message.agent { align-self: flex-start; }
+
+    .message-label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .message.user .message-label { text-align: right; }
+
+    .bubble {
+      padding: 12px 16px;
+      border-radius: 12px;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message.user .bubble {
+      background: #3730a3;
+      color: #e0e7ff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.agent .bubble {
+      background: #1e2235;
+      border: 1px solid #2d3152;
+      border-bottom-left-radius: 4px;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 13px;
+    }
+
+    .tool-calls { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+
+    .tool-call {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .tool-call-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #161b22;
+      cursor: pointer;
+    }
+
+    .tool-call-header .tool-name { font-weight: 600; color: #58a6ff; font-family: monospace; }
+    .tool-call-header .status { margin-left: auto; font-size: 11px; color: #8b949e; }
+    .tool-call-header .status.running { color: #f0a500; }
+    .tool-call-header .status.done    { color: #3fb950; }
+
+    .tool-call-body {
+      padding: 8px 12px;
+      color: #8b949e;
+      display: none;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .tool-call.expanded .tool-call-body { display: block; }
+
+    #input-area {
+      background: #1a1d2e;
+      border-top: 1px solid #2d3152;
+      padding: 16px 24px;
+    }
+
+    #input-form {
+      display: flex;
+      gap: 10px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    #input {
+      flex: 1;
+      background: #0f1117;
+      border: 1px solid #2d3152;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #e2e8f0;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #input:focus { border-color: #4f46e5; }
+    #input::placeholder { color: #475569; }
+
+    #send-btn {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    #send-btn:hover    { background: #4338ca; }
+    #send-btn:disabled { background: #374151; cursor: not-allowed; }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 900px;
+      margin: 0 auto 12px;
+    }
+
+    .chip {
+      background: #1e2235;
+      border: 1px solid #2d3152;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip:hover { background: #2d3152; color: #e2e8f0; border-color: #4f46e5; }
+
+    .typing { display: flex; gap: 4px; padding: 8px; }
+
+    .typing span {
+      width: 6px; height: 6px;
+      background: #4f46e5;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%            { transform: translateY(-6px); }
+    }
+
+    /* Markdown rendering inside agent bubbles */
+    .message.agent .bubble p        { margin-bottom: 10px; }
+    .message.agent .bubble p:last-child { margin-bottom: 0; }
+    .message.agent .bubble strong   { color: #e2e8f0; font-weight: 600; }
+    .message.agent .bubble em       { color: #94a3b8; }
+    .message.agent .bubble ul,
+    .message.agent .bubble ol       { padding-left: 20px; margin-bottom: 10px; }
+    .message.agent .bubble li       { margin-bottom: 4px; }
+    .message.agent .bubble h1,
+    .message.agent .bubble h2,
+    .message.agent .bubble h3       { color: #e2e8f0; margin: 12px 0 6px; font-size: 14px; }
+    .message.agent .bubble code     { background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #58a6ff; }
+    .message.agent .bubble pre      { background: #0d1117; padding: 10px; border-radius: 6px; overflow-x: auto; margin-bottom: 10px; }
+    .message.agent .bubble pre code { background: none; padding: 0; color: #e2e8f0; }
+    .message.agent .bubble hr       { border-color: #2d3152; margin: 10px 0; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2d3152; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN PAGE ─────────────────────────────────────────────── -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">🏨</div>
+    <div class="login-title">Grand Harbour Hotel</div>
+    <div class="login-subtitle">Revenue Manager · Sign in to continue</div>
+
+    <div class="login-error" id="login-error"></div>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="Enter username" autocomplete="username" required />
+      </div>
+      <div class="login-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required />
+      </div>
+      <button class="login-btn" id="login-btn" type="submit">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── CHAT PAGE ──────────────────────────────────────────────── -->
+<div id="chat-page" class="hidden">
+  <header>
+    <div style="font-size:22px">🏨</div>
+    <h1>Grand Harbour Hotel — Revenue Manager</h1>
+    <span class="badge">AI Agent</span>
+    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+  </header>
+
+  <div id="chat-container">
+    <div class="message agent">
+      <div class="message-label">Revenue Manager Agent</div>
+      <div class="bubble">Good morning. I'm your Revenue Manager.
+
+Ask me anything about the hotel's performance:
+  • What revenue is on the books by month?
+  • What's driving July?
+  • Are we too dependent on OTA?
+  • What changed in the last 7 days?
+  • How much group business do we have?
+  • Which room type has the highest ADR?</div>
+    </div>
+  </div>
+
+  <div id="input-area">
+    <div class="suggestions">
+      <span class="chip" onclick="ask('What revenue is on the books by month?')">Revenue by month</span>
+      <span class="chip" onclick="ask('What is driving July?')">What's driving July?</span>
+      <span class="chip" onclick="ask('Are we too dependent on OTA?')">OTA dependency</span>
+      <span class="chip" onclick="ask('What changed in the last 7 days for future stays?')">Last 7 days pickup</span>
+      <span class="chip" onclick="ask('How much group business do we have?')">Group business</span>
+      <span class="chip" onclick="ask('Which room type has the highest ADR?')">Room type ADR</span>
+      <span class="chip" onclick="ask('How much business was cancelled in June?')">Cancellations</span>
+      <span class="chip" onclick="ask('Is our business concentrated in a few large bookings?')">Concentration risk</span>
+    </div>
+    <form id="input-form" onsubmit="sendMessage(event)">
+      <input id="input" type="text" placeholder="Ask a revenue management question..." autocomplete="off" />
+      <button id="send-btn" type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const AGENT_API = (window.location.protocol === 'file:')
+    ? 'http://localhost:8000'
+    : window.location.origin;
+
+  // ── Auth ────────────────────────────────────────────────────────
+
+  let authToken = sessionStorage.getItem('auth_token');
+
+  // If already logged in, skip login screen
+  if (authToken) showChat();
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const btn      = document.getElementById('login-btn');
+    const errorEl  = document.getElementById('login-error');
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    errorEl.classList.remove('visible');
+
+    try {
+      const res = await fetch(`${AGENT_API}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        authToken = data.token;
+        sessionStorage.setItem('auth_token', authToken);
+        showChat();
+      } else {
+        const err = await res.json();
+        errorEl.textContent = err.detail || 'Login failed.';
+        errorEl.classList.add('visible');
+      }
+    } catch {
+      errorEl.textContent = 'Cannot connect to server. Is the API running?';
+      errorEl.classList.add('visible');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch(`${AGENT_API}/logout`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${authToken}` },
+      });
+    } catch { /* ignore */ }
+
+    sessionStorage.removeItem('auth_token');
+    authToken = null;
+    showLogin();
+  }
+
+  function showChat() {
+    document.getElementById('login-page').classList.add('hidden');
+    document.getElementById('chat-page').classList.remove('hidden');
+  }
+
+  function showLogin() {
+    document.getElementById('chat-page').classList.add('hidden');
+    document.getElementById('login-page').classList.remove('hidden');
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+  }
+
+  // ── Chat ────────────────────────────────────────────────────────
+
+  const container = document.getElementById('chat-container');
+  const input     = document.getElementById('input');
+  const sendBtn   = document.getElementById('send-btn');
+
+  function ask(question) {
+    input.value = question;
+    input.focus();
+  }
+
+  function scrollToBottom() {
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function createToolCallEl(toolName) {
+    const el = document.createElement('div');
+    el.className = 'tool-call';
+    el.innerHTML = `
+      <div class="tool-call-header" onclick="this.parentElement.classList.toggle('expanded')">
+        <span>⚙</span>
+        <span class="tool-name">${toolName}</span>
+        <span class="status running">Running...</span>
+      </div>
+      <div class="tool-call-body"></div>
+    `;
+    return el;
+  }
+
+  async function sendMessage(e) {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+
+    input.value  = '';
+    sendBtn.disabled = true;
+
+    // User message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user';
+    userMsg.innerHTML = `<div class="message-label">GM</div><div class="bubble">${question}</div>`;
+    container.appendChild(userMsg);
+    scrollToBottom();
+
+    // Agent message container
+    const agentMsg = document.createElement('div');
+    agentMsg.className = 'message agent';
+    agentMsg.innerHTML = `<div class="message-label">Revenue Manager Agent</div>`;
+
+    const toolCallsContainer = document.createElement('div');
+    toolCallsContainer.className = 'tool-calls';
+    agentMsg.appendChild(toolCallsContainer);
+
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    agentMsg.appendChild(typing);
+
+    container.appendChild(agentMsg);
+    scrollToBottom();
+
+    try {
+      const response = await fetch(`${AGENT_API}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ message: question }),
+      });
+
+      // Token expired or invalid — send to login
+      if (response.status === 401) {
+        sessionStorage.removeItem('auth_token');
+        showLogin();
+        return;
+      }
+
+      const reader  = response.body.getReader();
+      const decoder = new TextDecoder();
+      let answerText   = '';
+      let answerBubble = null;
+      const activeTools = {};
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        const lines = decoder.decode(value).split('\n');
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          let event;
+          try { event = JSON.parse(line.slice(6)); } catch { continue; }
+
+          if (event.type === 'tool_start') {
+            const toolEl = createToolCallEl(event.tool);
+            toolCallsContainer.appendChild(toolEl);
+            activeTools[event.tool] = toolEl;
+            scrollToBottom();
+
+          } else if (event.type === 'tool_end') {
+            const toolEl = activeTools[event.tool];
+            if (toolEl) {
+              toolEl.querySelector('.status').textContent = 'Done';
+              toolEl.querySelector('.status').className   = 'status done';
+              toolEl.querySelector('.tool-call-body').textContent = event.output;
+            }
+
+          } else if (event.type === 'token') {
+            if (typing.parentNode) typing.remove();
+            if (!answerBubble) {
+              answerBubble = document.createElement('div');
+              answerBubble.className = 'bubble';
+              agentMsg.appendChild(answerBubble);
+            }
+            answerText += event.content;
+            answerBubble.innerHTML = marked.parse(answerText);
+            scrollToBottom();
+
+          } else if (event.type === 'done') {
+            if (typing.parentNode) typing.remove();
+            if (!answerBubble) {
+              const b = document.createElement('div');
+              b.className = 'bubble';
+              b.textContent = '(No response)';
+              agentMsg.appendChild(b);
+            }
+
+          } else if (event.type === 'error') {
+            if (typing.parentNode) typing.remove();
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.textContent = `Error: ${event.message}`;
+            b.style.color = '#f87171';
+            agentMsg.appendChild(b);
+          }
+        }
+      }
+    } catch (err) {
+      if (typing.parentNode) typing.remove();
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      b.textContent = `Connection error: ${err.message}`;
+      b.style.color = '#f87171';
+      agentMsg.appendChild(b);
+    }
+
+    sendBtn.disabled = false;
+    input.focus();
+    scrollToBottom();
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) sendMessage(e);
+  });
+</script>
+</body>
+</html>

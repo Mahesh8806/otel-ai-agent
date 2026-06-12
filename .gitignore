@@ -1,0 +1,17 @@
+# Environment files — never commit these
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Logs and local notes
+*.txt
+*.log
+
+# Local docker setup
+docker-compose.yml
