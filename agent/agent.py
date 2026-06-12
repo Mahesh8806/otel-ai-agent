@@ -20,7 +20,10 @@ load_dotenv()
 from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend
 from langchain_openai import ChatOpenAI
-from tools import ALL_TOOLS
+try:
+    from agent.tools import ALL_TOOLS  # when run from project root
+except ImportError:
+    from tools import ALL_TOOLS        # when run from agent/ folder
 
 # ── Model ─────────────────────────────────────────────────────────────────────
 model = ChatOpenAI(
